@@ -11,30 +11,9 @@
 </head>
 <body>
   <main class="main">
-    <span
-      class="main__switch-mode"
-      onclick="changeMode()">
+    <span class="main__switch-mode">
       Switch to Night Mode
     </span>
   </main>
-
-  <script>
-    const main = document.querySelector('.main');
-    const span = document.querySelector('.main__switch-mode');
-    let mode = 0; // 0 - day, 1 - night
-
-    // have to use <script> instead of defining window.changeMode()
-    const changeMode = () => {
-      main.classList.toggle('main_midnight-blue');
-
-      if (mode) {
-        span.innerHTML = 'Switch to Night Mode';
-        mode = 0;
-      } else {
-        span.innerHTML = 'Switch to Day Mode';
-        mode = 1;
-      }
-    };
-  </script>
 </body>
 </html>
