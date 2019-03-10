@@ -1,0 +1,19 @@
+@import 'variables.scss';
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: #fff;
+  &_midnight-blue {
+    background: #242F3E;
+  }
+  &__switch-mode {
+    margin-top: auto;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: $blue;
+  }
+}

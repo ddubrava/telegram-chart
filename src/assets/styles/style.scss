@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'San-Francisco';
+  src: url('./../fonts/San-Francisco.ttf');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 10px;
+}
+
+body {
+  height: 100%;
+  font-size: 1.6rem;
+  font-family: 'San-Francisco', sans-serif;
+}
