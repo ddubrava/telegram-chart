@@ -1,18 +1,22 @@
-
 export default class DrawGraph {
-  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue) {
-    this.canvasActualHeight = canvasActualHeight;
-    this.minValue = minValue;
-    this.maxValue = maxValue;
-    this.heightOffset = heightOffset;
-    this.chart = chart;
+  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
     this.canvas = canvas;
     this.ctx = ctx;
-    this.drawLine(1, 60);
-    this.drawLine(2, 60);
+    this.canvasActualHeight = canvasActualHeight;
+    this.heightOffset = heightOffset;
+    this.chart = chart;
+    this.minValue = minValue;
+    this.maxValue = maxValue;
+    this.drawLine(1);
+    this.drawLine(2);
+
+    emitter.subscribe('event:scale-change', data => {
+      this.drawLine(1, data);
+      this.drawLine(2, data);
+    });
   }
 
-  drawLine(chartNumber, scale = 6) {
+  drawLine(chartNumber, scale = 25) {
     const lineYCoordinates = [];
     this.chart.columns[chartNumber].forEach((item, i) => {
       if (i > 0) {
