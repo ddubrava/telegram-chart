@@ -3,4 +3,7 @@ import ChartController from './classes/Controller';
 
 const canvas = document.getElementById('chart');
 const chart = new ChartController(canvas, chartData[0]);
-chart.changeScale();
+
+setTimeout(() => {
+  chart.changeScale(50);
+}, 1000);
