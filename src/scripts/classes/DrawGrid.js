@@ -1,5 +1,5 @@
 export default class DrawGrid {
-  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue) {
+  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.canvasActualHeight = canvasActualHeight;
@@ -10,6 +10,12 @@ export default class DrawGrid {
     this.yValues = this.findAverageValues();
     this.xValues = this.getDates();
     this.drawGrid();
+
+    emitter.subscribe('event:scale-change', data => {
+      this.xValues = this.getDates(data);
+      // this.yValues = this.findAverageValues();
+      this.drawGrid();
+    });
   }
 
   findAverageValues() {
@@ -22,18 +28,22 @@ export default class DrawGrid {
     return values.reverse();
   }
 
-  getDates() {
+  getDates(scale = 6) {
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const dates = [];
+    const dateDiff = Math.round(scale / 6);
+    const dates = this.chart.columns[0];
+    let filteredDates = [];
 
-    this.chart.columns[0].forEach(item => {
-      if (typeof item === 'number') {
-        const date = new Date(item);
-        dates.push(`${monthNames[date.getMonth()]} ${date.getDate()}`);
-      }
+    for (let i = 1; i < dates.length; i += dateDiff) {
+      filteredDates.push(dates[i]);
+    }
+
+    filteredDates = filteredDates.map(item => {
+      const date = new Date(item);
+      return `${monthNames[date.getMonth()]} ${date.getDate()}`;
     });
 
-    return dates;
+    return filteredDates;
   }
 
   drawXLine(x, y) {
