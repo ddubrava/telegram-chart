@@ -1,5 +1,6 @@
 import DrawGrid from './DrawGrid';
 import DrawGraph from './DrawGraph';
+import EventEmitter from './EventEmitter';
 
 export default class ChartController {
   constructor(
@@ -14,6 +15,7 @@ export default class ChartController {
     this.canvasActualHeight = canvas.height / 1.2;
     this.heightOffset = (canvas.height - canvas.height / 1.2) / 2;
     [this.minValue, this.maxValue] = this.getMinMaxValues();
+    this.emitter = new EventEmitter();
     this.drawGrid = new DrawGrid(
       this.canvas,
       this.ctx,
@@ -21,7 +23,8 @@ export default class ChartController {
       this.heightOffset,
       this.chart,
       this.minValue,
-      this.maxValue
+      this.maxValue,
+      this.emitter
     );
     this.drawGraph = new DrawGraph(
       this.canvas,
@@ -30,7 +33,8 @@ export default class ChartController {
       this.heightOffset,
       this.chart,
       this.minValue,
-      this.maxValue
+      this.maxValue,
+      this.emitter
     );
   }
 
@@ -45,7 +49,8 @@ export default class ChartController {
     ];
   }
 
-  changeScale() {
-    console.log(this.canvas);
+  changeScale(scale) {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.emitter.emit('event:scale-change', scale);
   }
 }
