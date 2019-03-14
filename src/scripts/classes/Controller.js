@@ -11,7 +11,7 @@ export default class ChartController {
     this.chart = chart;
     this.ctx = canvas.getContext('2d');
     this.canvas.width = window.innerWidth - 25;
-    this.canvas.height = window.innerWidth - 25;
+    this.canvas.height = window.innerHeight / 1.6;
     this.canvasActualHeight = canvas.height / 1.2;
     this.heightOffset = (canvas.height - canvas.height / 1.2) / 2;
     [this.minValue, this.maxValue] = this.getMinMaxValues();
