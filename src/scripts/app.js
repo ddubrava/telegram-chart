@@ -2,7 +2,7 @@ import chartData from '../chart_data.json';
 import ChartController from './classes/Controller';
 
 const canvas = document.getElementById('chart');
-const chart = new ChartController(canvas, chartData[0]);
+const chart = new ChartController(canvas, chartData[2]);
 
 setTimeout(() => {
   chart.changeScale(50);
