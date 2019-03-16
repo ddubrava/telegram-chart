@@ -1,6 +1,7 @@
+import EventEmitter from './EventEmitter';
 import DrawGrid from './DrawGrid';
 import DrawGraph from './DrawGraph';
-import EventEmitter from './EventEmitter';
+import DrawMap from './DrawMap';
 
 export default class ChartController {
   constructor(
@@ -12,7 +13,7 @@ export default class ChartController {
     this.ctx = canvas.getContext('2d');
     this.canvas.width = window.innerWidth - 25;
     this.canvas.height = window.innerHeight / 1.6;
-    this.canvasActualHeight = canvas.height / 1.2;
+    this.canvasActualHeight = canvas.height / 1.35;
     this.heightOffset = (canvas.height - canvas.height / 1.2) / 2;
     [this.minValue, this.maxValue] = this.getMinMaxValues();
     this.emitter = new EventEmitter();
@@ -36,6 +37,15 @@ export default class ChartController {
       this.maxValue,
       this.emitter
     );
+    this.drawMap = new DrawMap(
+      this.canvas,
+      this.ctx,
+      this.heightOffset,
+      this.chart,
+      this.minValue,
+      this.maxValue,
+      this.emitter
+    );
   }
 
   getMinMaxValues() {
@@ -47,10 +57,5 @@ export default class ChartController {
       Math.min.apply(null, concatenatedData),
       Math.max.apply(null, concatenatedData)
     ];
-  }
-
-  changeScale(scale) {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.emitter.emit('event:scale-change', scale);
   }
 }
