@@ -19,6 +19,11 @@ export default class DrawGrid {
       this.xValues = this.getDates(this.scale, data[0] + 1);
       this.drawGrid();
     });
+
+    emitter.subscribe('event:redraw', data => {
+      this.chart = data;
+      this.drawGrid();
+    });
   }
 
   findAverageValues() {

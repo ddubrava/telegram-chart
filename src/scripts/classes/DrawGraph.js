@@ -4,21 +4,28 @@ export default class DrawGraph {
     this.ctx = ctx;
     this.canvasActualHeight = canvasActualHeight;
     this.heightOffset = heightOffset;
+    this.chart = chart;
     this.minValue = minValue;
     this.maxValue = maxValue;
 
     emitter.subscribe('event:scale-change', scale => {
-      this.countYCoordinates(chart, scale);
+      this.countYCoordinates(scale);
       this.scale = scale;
     });
 
     emitter.subscribe('event:x-change', beginEndIndexes => {
-      this.countYCoordinates(chart, this.scale, beginEndIndexes);
+      this.countYCoordinates(this.scale, beginEndIndexes);
+      this.beginEndIndexes = beginEndIndexes;
+    });
+
+    emitter.subscribe('event:redraw', data => {
+      this.chart = data;
+      this.countYCoordinates(this.scale, this.beginEndIndexes);
     });
   }
 
-  countYCoordinates(chart, scale, beginEndIndexes) {
-    chart.columns.forEach((col, index) => {
+  countYCoordinates(scale, beginEndIndexes) {
+    this.chart.columns.forEach((col, index) => {
       if (index > 0) {
         const colName = col[0];
         const lineYCoordinates = [];
@@ -39,18 +46,18 @@ export default class DrawGraph {
           }
         });
 
-        this.drawLines(lineYCoordinates, chart, scale, colName);
+        this.drawLines(lineYCoordinates, scale, colName);
       }
     });
   }
 
-  drawLines(lineYCoordinates, chart, scale, colName) {
+  drawLines(lineYCoordinates, scale, colName) {
     for (let i = 0; i < lineYCoordinates.length; i += 1) {
       this.ctx.beginPath();
       this.ctx.moveTo(this.canvas.width / scale * i, lineYCoordinates[i]);
       this.ctx.lineTo(this.canvas.width / scale * [i + 1], lineYCoordinates[i + 1]);
       this.ctx.lineWidth = 2;
-      this.ctx.strokeStyle = chart.colors[colName];
+      this.ctx.strokeStyle = this.chart.colors[colName];
       this.ctx.stroke();
     }
   }
