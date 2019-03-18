@@ -2,6 +2,7 @@ import EventEmitter from './EventEmitter';
 import DrawGrid from './DrawGrid';
 import DrawGraph from './DrawGraph';
 import DrawMap from './DrawMap';
+import ButtonsControl from './ButtonsControl';
 
 export default class ChartController {
   constructor(
@@ -10,6 +11,7 @@ export default class ChartController {
   ) {
     this.canvas = canvas;
     this.chart = chart;
+    this.currentChart = Object.assign({}, this.chart);
     this.ctx = canvas.getContext('2d');
     this.canvas.width = window.innerWidth - 25;
     this.canvas.height = window.innerHeight / 1.6;
@@ -46,6 +48,16 @@ export default class ChartController {
       this.maxValue,
       this.emitter
     );
+    this.buttonsControl = new ButtonsControl(
+      this.canvas,
+      this.ctx,
+      this.chart,
+      this.emitter
+    );
+
+    this.emitter.subscribe('event:toggle-line', line => {
+      this.toggleLine(line);
+    });
   }
 
   getMinMaxValues() {
@@ -57,5 +69,20 @@ export default class ChartController {
       Math.min.apply(null, concatenatedData),
       Math.max.apply(null, concatenatedData)
     ];
+  }
+
+  toggleLine(line) {
+    if (Object.values(line)[0]) {
+      this.currentChart.columns.push(
+        this.chart.columns[
+          this.chart.columns.findIndex(col => col[0] === Object.keys(line)[0])
+        ]
+      );
+    } else {
+      this.currentChart.columns = this.currentChart.columns
+        .filter(col => col[0] !== Object.keys(line)[0]);
+    }
+
+    this.emitter.emit('event:redraw', this.currentChart);
   }
 }

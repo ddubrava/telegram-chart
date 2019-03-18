@@ -24,6 +24,14 @@ export default class DrawMap {
     this.moveRectMap();
     this.getBeginEndIndexes();
     this.changeScale();
+
+    emitter.subscribe('event:redraw', data => {
+      this.chart = data;
+
+      this.drawMapRect();
+      this.drawMapZoom();
+      this.drawLinesInMap();
+    });
   }
 
   drawMapRect() {
