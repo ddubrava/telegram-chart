@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development --open",
+    "start": "webpack-dev-server --host 0.0.0.0 --mode development --open",
     "build": "webpack --mode production"
   },
   "author": "Daniil Dubrava",
