@@ -68,7 +68,7 @@ export default class ChartController {
       chart,
       this.emitter
     );
-    this.ChangeMode = new ChangeMode();
+    this.ChangeMode = new ChangeMode(canvas);
 
     this.emitter.subscribe('event:toggle-line', line => {
       MathUtility.getCurrentChartModel(line, this.currentChart, chart);

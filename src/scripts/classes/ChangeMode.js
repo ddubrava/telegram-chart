@@ -1,15 +1,20 @@
 export default class ChangeMode {
-  constructor() {
-    this.constructor.changeMode();
+  constructor(canvas) {
+    this.constructor.changeMode(canvas);
   }
 
-  static changeMode() {
-    const main = document.querySelector('.main');
-    const span = document.querySelector('.main__switch-mode');
+  static changeMode(canvas) {
+    const chartContainer = canvas.parentNode;
+    const span = document.createElement('span');
+
+    span.innerHTML = 'Switch to Night Mode';
+    span.classList.add('main__switch-mode');
+    chartContainer.append(span);
+
     let mode = 0; // 0 - day, 1 - night
 
     span.addEventListener('click', () => {
-      main.classList.toggle('main_midnight-blue');
+      chartContainer.classList.toggle('main__chart_midnight-blue');
 
       if (mode) {
         span.innerHTML = 'Switch to Night Mode';

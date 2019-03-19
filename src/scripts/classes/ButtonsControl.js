@@ -7,12 +7,12 @@ export default class ButtonsControl {
     this.toggleLine = this.toggleLine.bind(this);
 
     this.createButtons();
-
-    this.checkMarks = document.querySelectorAll('.main__check-mark');
+    this.checkMarks = document.querySelectorAll(`.main__check-mark_${this.canvas.parentNode.id.slice(-1)}`);
   }
 
   createButtons() {
-    const btnsContainer = document.querySelector('.main__button-container');
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('main__button-container');
 
     Object.keys(this.chart.names).forEach(name => {
       const button = document.createElement('button');
@@ -23,14 +23,15 @@ export default class ButtonsControl {
       button.id = name;
       buttonTitle.innerHTML = name;
       buttonTitle.id = name;
-      checkMark.className = 'main__check-mark';
+      checkMark.classList.add('main__check-mark', `main__check-mark_${this.canvas.parentNode.id.slice(-1)}`);
       checkMark.style = `background: ${this.chart.colors[name]}`;
       checkMark.id = name;
       button.addEventListener('click', this.toggleLine, false);
 
+      this.canvas.parentNode.insertBefore(buttonsContainer, this.canvas.nextSibling);
       button.append(checkMark);
       button.append(buttonTitle);
-      btnsContainer.append(button);
+      buttonsContainer.append(button);
     });
   }
 
