@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import EventEmitter from './EventEmitter';
 import DrawGrid from './DrawGrid';
 import DrawGraph from './DrawGraph';
@@ -11,9 +12,20 @@ export default class ChartController {
     canvas,
     chart
   ) {
-    canvas.width = window.innerWidth - 25; // eslint-disable-line no-param-reassign
-    canvas.height = window.innerHeight / 1.6; // eslint-disable-line no-param-reassign
-    this.canvasActualHeight = canvas.height / 1.35;
+    if (window.innerHeight < 600) {
+      canvas.height = window.innerHeight / 1.4;
+      this.canvasActualHeight = canvas.height / 1.5;
+    } else {
+      canvas.height = window.innerHeight / 1.6;
+      this.canvasActualHeight = canvas.height / 1.5;
+    }
+
+    if (window.innerWidth < 400) {
+      canvas.width = window.innerWidth - 25;
+    } else {
+      canvas.width = 390;
+    }
+
     this.heightOffset = (canvas.height - canvas.height / 1.2) / 2;
     this.ctx = canvas.getContext('2d');
 
