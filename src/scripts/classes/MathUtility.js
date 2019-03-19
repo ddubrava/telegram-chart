@@ -1,8 +1,8 @@
 export default class MathUtility {
   // Controller
   static getMinMaxValues(chart) {
-    const concatenatedData = chart.columns[1]
-      .concat(chart.columns[2])
+    const concatenatedData = []
+      .concat(...chart.columns.slice(-chart.columns.length + 1))
       .filter(item => typeof item === 'number');
 
     return [
