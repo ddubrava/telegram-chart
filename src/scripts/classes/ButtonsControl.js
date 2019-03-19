@@ -21,7 +21,7 @@ export default class ButtonsControl {
 
       button.className = 'main__button';
       button.id = name;
-      buttonTitle.innerHTML = name;
+      buttonTitle.innerHTML = this.chart.names[name];
       buttonTitle.id = name;
       checkMark.classList.add('main__check-mark', `main__check-mark_${this.canvas.parentNode.id.slice(-1)}`);
       checkMark.style = `background: ${this.chart.colors[name]}`;
