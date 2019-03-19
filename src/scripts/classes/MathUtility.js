@@ -72,7 +72,7 @@ export default class MathUtility {
     chart.columns.forEach((col, index) => {
       if (index > 0) {
         lineYCoordinates.push({
-          axis: Object.keys(chart.names)[index - 1],
+          axis: col[0],
           yCoordinates: []
         });
 
