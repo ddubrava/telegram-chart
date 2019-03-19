@@ -1,3 +1,5 @@
+import MathChart from '../math';
+
 export default class DrawGrid {
   constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
     this.canvas = canvas;
@@ -10,48 +12,20 @@ export default class DrawGrid {
 
     emitter.subscribe('event:scale-change', scale => {
       this.scale = scale;
-      this.xValues = this.getDates(scale);
-      this.yValues = this.findAverageValues();
-      this.drawGrid();
+      this.xValues = MathChart.getDates(chart, scale);
+      this.yValues = MathChart.findAverageValues([minValue, maxValue]);
+      this.drawGrid(this.xValues, this.yValues);
     });
 
     emitter.subscribe('event:x-change', data => {
-      this.xValues = this.getDates(this.scale, data[0] + 1);
-      this.drawGrid();
+      this.xValues = MathChart.getDates(chart, this.scale, data[0] + 1);
+      this.drawGrid(this.xValues, this.yValues);
     });
 
     emitter.subscribe('event:redraw', data => {
       this.chart = data;
-      this.drawGrid();
+      this.drawGrid(this.xValues, this.yValues);
     });
-  }
-
-  findAverageValues() {
-    const step = (this.maxValue - this.minValue) / 5;
-    const values = [];
-    for (let i = this.minValue; i <= this.maxValue; i += step) {
-      values.push(+i.toFixed(2));
-    }
-
-    return values.reverse();
-  }
-
-  getDates(scale, begin = 1) {
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const dateDiff = Math.ceil(scale / 6);
-    const dates = this.chart.columns[0];
-    let filteredDates = [];
-    // console.log(begin)
-    for (let i = begin; i < dates.length; i += dateDiff) {
-      filteredDates.push(dates[i]);
-    }
-
-    filteredDates = filteredDates.map(item => {
-      const date = new Date(item);
-      return `${monthNames[date.getMonth()]} ${date.getDate()}`;
-    });
-
-    return filteredDates;
   }
 
   drawXLine(x, y) {
@@ -62,21 +36,21 @@ export default class DrawGrid {
     this.ctx.stroke();
   }
 
-  drawYValue(x, y, i) {
+  drawYValue(x, y, yValues, i) {
     this.ctx.fillStyle = '#9DA8B0';
-    this.ctx.fillText(this.yValues[i], x + 2.5, y - 5);
+    this.ctx.fillText(yValues[i], x + 2.5, y - 5);
   }
 
-  drawXValue(x, y, i) {
-    this.ctx.fillText(this.xValues[i], x + 15, y);
+  drawXValue(x, y, xValues, i) {
+    this.ctx.fillText(xValues[i], x + 15, y);
   }
 
-  drawGrid() {
+  drawGrid(xValues, yValues) {
     for (let i = 0; i < 6; i += 1) {
       this.drawXLine(0, this.canvasActualHeight / 5 * i + this.heightOffset);
-      this.drawYValue(0, this.canvasActualHeight / 5 * i + this.heightOffset, i);
+      this.drawYValue(0, this.canvasActualHeight / 5 * i + this.heightOffset, yValues, i);
       this.drawXValue(
-        this.canvas.width / 6 * i, this.canvasActualHeight + this.heightOffset + 25, i
+        this.canvas.width / 6 * i, this.canvasActualHeight + this.heightOffset + 25, xValues, i
       );
     }
   }
