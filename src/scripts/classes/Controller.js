@@ -3,6 +3,7 @@ import DrawGrid from './DrawGrid';
 import DrawGraph from './DrawGraph';
 import DrawMap from './DrawMap';
 import ButtonsControl from './ButtonsControl';
+import ChangeMode from './ChangeMode';
 
 export default class ChartController {
   constructor(
@@ -54,6 +55,7 @@ export default class ChartController {
       this.chart,
       this.emitter
     );
+    this.ChangeMode = new ChangeMode();
 
     this.emitter.subscribe('event:toggle-line', line => {
       this.toggleLine(line);
