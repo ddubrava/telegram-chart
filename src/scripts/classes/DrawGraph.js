@@ -46,7 +46,7 @@ export default class DrawGraph {
         data,
         MathUtility.countYCoordinates(
           data,
-          undefined,
+          this.beginEndIndexes,
           this.minValue,
           this.maxValue,
           canvasActualHeight,
