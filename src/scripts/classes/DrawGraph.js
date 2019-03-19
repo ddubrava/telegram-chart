@@ -4,6 +4,7 @@ export default class DrawGraph {
   constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
     this.canvas = canvas;
     this.ctx = ctx;
+    this.chart = chart;
     this.minValue = minValue;
     this.maxValue = maxValue;
 
@@ -26,9 +27,9 @@ export default class DrawGraph {
 
     emitter.subscribe('event:x-change', beginEndIndexes => {
       this.drawLines(
-        chart,
+        this.chart,
         MathUtility.countYCoordinates(
-          chart,
+          this.chart,
           beginEndIndexes,
           this.minValue,
           this.maxValue,
@@ -42,6 +43,8 @@ export default class DrawGraph {
     });
 
     emitter.subscribe('event:redraw', data => {
+      this.chart = data;
+
       this.drawLines(
         data,
         MathUtility.countYCoordinates(
