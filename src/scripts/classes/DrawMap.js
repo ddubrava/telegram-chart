@@ -22,7 +22,6 @@ export default class DrawMap {
     this.drawMapRect();
     this.drawMapZoom();
     this.drawLinesInMap();
-    this.moveRectMap();
     this.changeScale(); // to emit default scale
 
     emitter.subscribe('event:redraw', data => {
@@ -32,6 +31,21 @@ export default class DrawMap {
       this.drawMapZoom();
       this.drawLinesInMap();
     });
+
+    // listeners
+    this.canvas.ontouchmove = event => {
+      this.handleMove(this.constructor.getXY(true, event));
+    };
+
+    this.canvas.onmousedown = () => {
+      this.canvas.onmousemove = event => {
+        this.handleMove(this.constructor.getXY(false, event));
+      };
+    };
+
+    this.canvas.onmouseup = () => {
+      this.canvas.onmousemove = null;
+    };
   }
 
   drawMapRect() {
@@ -82,40 +96,52 @@ export default class DrawMap {
     });
   }
 
-  moveRectMap() {
-    this.canvas.addEventListener('touchmove', event => {
+  static getXY(mobile, event) {
+    let [x, y] = [null, null];
+
+    if (mobile) {
       const rect = event.target.getBoundingClientRect();
-      const [x, y] = [
+      [x, y] = [
         event.targetTouches[0].clientX - rect.left,
         event.targetTouches[0].clientY - rect.top
       ];
+    } else {
+      const rect = event.target.getBoundingClientRect();
+      [x, y] = [
+        event.clientX - rect.left,
+        event.clientY - rect.top
+      ];
+    }
 
-      if (
-        x >= this.zoomX
-        && x <= this.zoomX + this.zoomWidth
-        && y >= this.zoomY
-        && y <= this.zoomY + this.zoomHeight
-      ) {
-        if (x - this.zoomWidth / 2 > 0 && x + this.zoomHeight < this.canvas.width - 2) {
-          this.zoomX = x - this.zoomWidth / 2;
-        }
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    return [x, y];
+  }
 
-        this.emitter.emit(
-          'event:x-change',
-          MathUtility.getBeginEndIndexes(
-            this.canvas.width,
-            this.zoomX,
-            this.zoomWidth,
-            this.lineYCoordinates.length
-          )
-        );
-
-        this.drawMapRect();
-        this.drawMapZoom();
-        this.drawLinesInMap();
+  handleMove([x, y]) {
+    if (
+      x >= this.zoomX
+      && x <= this.zoomX + this.zoomWidth
+      && y >= this.zoomY
+      && y <= this.zoomY + this.zoomHeight
+    ) {
+      if (x - this.zoomWidth / 2 > 0 && x + this.zoomHeight < this.canvas.width - 2) {
+        this.zoomX = x - this.zoomWidth / 2;
       }
-    });
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.emitter.emit(
+        'event:x-change',
+        MathUtility.getBeginEndIndexes(
+          this.canvas.width,
+          this.zoomX,
+          this.zoomWidth,
+          this.lineYCoordinates.length
+        )
+      );
+
+      this.drawMapRect();
+      this.drawMapZoom();
+      this.drawLinesInMap();
+    }
   }
 
   changeScale() {
