@@ -15,8 +15,7 @@ export default class DrawMap {
     this.zoomX = 1;
     this.zoomY = this.mapYCoordinate;
     this.zoomWidth = 100;
-    this.zoomHeight = this.mapHeight - 2;
-    this.outterHeightOffset = 28; // 10 margin + text height
+    this.zoomHeight = this.mapHeight;
     this.outterWidthOffset = Math.round((window.innerWidth - this.canvas.width) / 2);
     this.lineYCoordinates = [];
 
@@ -85,13 +84,17 @@ export default class DrawMap {
 
   moveRectMap() {
     this.canvas.addEventListener('touchmove', event => {
-      const [x, y] = [event.targetTouches[0].pageX, event.targetTouches[0].pageY];
+      const rect = event.target.getBoundingClientRect();
+      const [x, y] = [
+        event.targetTouches[0].clientX - rect.left,
+        event.targetTouches[0].clientY - rect.top
+      ];
 
       if (
-        x - this.outterWidthOffset >= this.zoomX
-        && x - this.outterWidthOffset <= this.zoomX + this.zoomWidth
-        && y - this.outterHeightOffset >= this.zoomY
-        && y - this.outterHeightOffset <= this.zoomY + this.zoomHeight
+        x >= this.zoomX
+        && x <= this.zoomX + this.zoomWidth
+        && y >= this.zoomY
+        && y <= this.zoomY + this.zoomHeight
       ) {
         if (x - this.zoomWidth / 2 > 0 && x + this.zoomHeight < this.canvas.width - 2) {
           this.zoomX = x - this.zoomWidth / 2;
