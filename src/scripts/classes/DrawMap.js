@@ -1,3 +1,5 @@
+import MathChart from '../math';
+
 export default class DrawMap {
   constructor(canvas, ctx, heightOffset, chart, minValue, maxValue, emitter) {
     this.canvas = canvas;
@@ -22,8 +24,7 @@ export default class DrawMap {
     this.drawMapZoom();
     this.drawLinesInMap();
     this.moveRectMap();
-    this.getBeginEndIndexes();
-    this.changeScale();
+    this.changeScale(); // to emit default scale
 
     emitter.subscribe('event:redraw', data => {
       this.chart = data;
@@ -82,12 +83,6 @@ export default class DrawMap {
     });
   }
 
-  getBeginEndIndexes() {
-    this.begin = Math.floor(this.zoomX / (this.canvas.width / this.lineYCoordinates.length));
-    this.end = this.begin
-      + Math.ceil(this.zoomWidth / (this.canvas.width / this.lineYCoordinates.length));
-  }
-
   moveRectMap() {
     this.canvas.addEventListener('touchmove', event => {
       const [x, y] = [event.targetTouches[0].pageX, event.targetTouches[0].pageY];
@@ -103,8 +98,15 @@ export default class DrawMap {
         }
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.getBeginEndIndexes();
-        this.emitter.emit('event:x-change', [this.begin, this.end]);
+        this.emitter.emit(
+          'event:x-change',
+          MathChart.getBeginEndIndexes(
+            this.canvas.width,
+            this.zoomX,
+            this.zoomWidth,
+            this.lineYCoordinates.length
+          )
+        );
 
         this.drawMapRect();
         this.drawMapZoom();
@@ -114,6 +116,12 @@ export default class DrawMap {
   }
 
   changeScale() {
-    this.emitter.emit('event:scale-change', this.end - this.begin);
+    const [begin, end] = MathChart.getBeginEndIndexes(
+      this.canvas.width,
+      this.zoomX,
+      this.zoomWidth,
+      this.lineYCoordinates.length
+    );
+    this.emitter.emit('event:scale-change', end - begin);
   }
 }

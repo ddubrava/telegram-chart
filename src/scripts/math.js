@@ -55,4 +55,13 @@ export default class MathChart {
 
     return filteredDates;
   }
+
+  // DrawMap
+  static getBeginEndIndexes(canvasWidth, zoomX, zoomWidth, lineYCoordinatesLength) {
+    const begin = Math.floor(zoomX / (canvasWidth / lineYCoordinatesLength));
+    return [
+      begin,
+      begin + Math.ceil(zoomWidth / (canvasWidth / lineYCoordinatesLength))
+    ];
+  }
 }
