@@ -1,4 +1,4 @@
-import MathChart from '../math';
+import MathUtility from './MathUtility';
 
 export default class DrawMap {
   constructor(canvas, ctx, heightOffset, chart, minValue, maxValue, emitter) {
@@ -100,7 +100,7 @@ export default class DrawMap {
 
         this.emitter.emit(
           'event:x-change',
-          MathChart.getBeginEndIndexes(
+          MathUtility.getBeginEndIndexes(
             this.canvas.width,
             this.zoomX,
             this.zoomWidth,
@@ -116,7 +116,7 @@ export default class DrawMap {
   }
 
   changeScale() {
-    const [begin, end] = MathChart.getBeginEndIndexes(
+    const [begin, end] = MathUtility.getBeginEndIndexes(
       this.canvas.width,
       this.zoomX,
       this.zoomWidth,

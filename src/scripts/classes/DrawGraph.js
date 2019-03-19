@@ -1,4 +1,4 @@
-import MathChart from '../math';
+import MathUtility from './MathUtility';
 
 export default class DrawGraph {
   constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
@@ -10,7 +10,7 @@ export default class DrawGraph {
     emitter.subscribe('event:scale-change', scale => {
       this.drawLines(
         chart,
-        MathChart.countYCoordinates(
+        MathUtility.countYCoordinates(
           chart,
           undefined,
           this.minValue,
@@ -27,7 +27,7 @@ export default class DrawGraph {
     emitter.subscribe('event:x-change', beginEndIndexes => {
       this.drawLines(
         chart,
-        MathChart.countYCoordinates(
+        MathUtility.countYCoordinates(
           chart,
           beginEndIndexes,
           this.minValue,
@@ -44,7 +44,7 @@ export default class DrawGraph {
     emitter.subscribe('event:redraw', data => {
       this.drawLines(
         data,
-        MathChart.countYCoordinates(
+        MathUtility.countYCoordinates(
           data,
           undefined,
           this.minValue,

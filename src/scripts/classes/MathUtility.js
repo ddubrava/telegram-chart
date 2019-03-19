@@ -1,4 +1,4 @@
-export default class MathChart {
+export default class MathUtility {
   // Controller
   static getMinMaxValues(chart) {
     const concatenatedData = chart.columns[1]

@@ -4,7 +4,7 @@ import DrawGraph from './DrawGraph';
 import DrawMap from './DrawMap';
 import ButtonsControl from './ButtonsControl';
 import ChangeMode from './ChangeMode';
-import MathChart from '../math';
+import MathUtility from './MathUtility';
 
 export default class ChartController {
   constructor(
@@ -18,7 +18,7 @@ export default class ChartController {
     this.ctx = canvas.getContext('2d');
 
     this.currentChart = Object.assign({}, chart);
-    [this.minValue, this.maxValue] = MathChart.getMinMaxValues(chart);
+    [this.minValue, this.maxValue] = MathUtility.getMinMaxValues(chart);
 
     this.emitter = new EventEmitter();
     this.drawGrid = new DrawGrid(
@@ -59,7 +59,7 @@ export default class ChartController {
     this.ChangeMode = new ChangeMode();
 
     this.emitter.subscribe('event:toggle-line', line => {
-      MathChart.getCurrentChartModel(line, this.currentChart, chart);
+      MathUtility.getCurrentChartModel(line, this.currentChart, chart);
       this.emitter.emit('event:redraw', this.currentChart);
     });
   }

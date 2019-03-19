@@ -1,4 +1,4 @@
-import MathChart from '../math';
+import MathUtility from './MathUtility';
 
 export default class DrawGrid {
   constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
@@ -12,13 +12,13 @@ export default class DrawGrid {
 
     emitter.subscribe('event:scale-change', scale => {
       this.scale = scale;
-      this.xValues = MathChart.getDates(chart, scale);
-      this.yValues = MathChart.findAverageValues([minValue, maxValue]);
+      this.xValues = MathUtility.getDates(chart, scale);
+      this.yValues = MathUtility.findAverageValues([minValue, maxValue]);
       this.drawGrid(this.xValues, this.yValues);
     });
 
     emitter.subscribe('event:x-change', data => {
-      this.xValues = MathChart.getDates(chart, this.scale, data[0] + 1);
+      this.xValues = MathUtility.getDates(chart, this.scale, data[0] + 1);
       this.drawGrid(this.xValues, this.yValues);
     });
 
