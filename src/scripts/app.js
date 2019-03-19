@@ -13,3 +13,6 @@ new ChartController(chartContainer2.children[0], chartData[2]);
 
 const chartContainer3 = document.getElementById('chart_3');
 new ChartController(chartContainer3.children[0], chartData[3]);
+
+const chartContainer4 = document.getElementById('chart_4');
+new ChartController(chartContainer4.children[0], chartData[4]);

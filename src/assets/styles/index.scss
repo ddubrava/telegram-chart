@@ -21,6 +21,7 @@
   }
   &__button-container {
     display: flex;
+    width: 100vw;
     margin-right: auto;
     margin-top: 1rem;
   }
@@ -69,7 +70,12 @@
 }
 
 @media (min-width: 720px) {
-  .main__chart {
-    margin: 0 1rem;
+  .main {
+    &__chart {
+      margin: 0 1rem;
+    }
+    &__button-container {
+      width: auto;
+    }
   }
 }
