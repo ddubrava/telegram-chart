@@ -1,4 +1,5 @@
 export default class MathChart {
+  // Controller
   static getMinMaxValues(chart) {
     const concatenatedData = chart.columns[1]
       .concat(chart.columns[2])
@@ -24,5 +25,34 @@ export default class MathChart {
     }
 
     return result;
+  }
+
+  // DrawGrid
+  static findAverageValues([min, max]) {
+    const step = (max - min) / 5;
+    const values = [];
+    for (let i = min; i <= max; i += step) {
+      values.push(+i.toFixed(2));
+    }
+
+    return values.reverse();
+  }
+
+  static getDates(chart, scale, begin = 1) {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dateDiff = Math.ceil(scale / 6);
+    const dates = chart.columns[0];
+    let filteredDates = [];
+
+    for (let i = begin; i < dates.length; i += dateDiff) {
+      filteredDates.push(dates[i]);
+    }
+
+    filteredDates = filteredDates.map(item => {
+      const date = new Date(item);
+      return `${monthNames[date.getMonth()]} ${date.getDate()}`;
+    });
+
+    return filteredDates;
   }
 }
