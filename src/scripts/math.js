@@ -64,4 +64,32 @@ export default class MathChart {
       begin + Math.ceil(zoomWidth / (canvasWidth / lineYCoordinatesLength))
     ];
   }
+
+  // DrawGraph
+  static countYCoordinates(chart, beginEndIndexes, min, max, canvasActualHeight, heightOffset) {
+    const lineYCoordinates = [];
+
+    chart.columns.forEach((col, index) => {
+      if (index > 0) {
+        lineYCoordinates.push({
+          axis: Object.keys(chart.names)[index - 1],
+          yCoordinates: []
+        });
+
+        col.forEach((item, i) => {
+          const axisReferenceFormula = canvasActualHeight - (item - min)
+            * (canvasActualHeight / (max - min))
+              + heightOffset;
+
+          if (!beginEndIndexes && i > 0) {
+            lineYCoordinates[index - 1].yCoordinates.push(axisReferenceFormula);
+          } else if (i > 0 && i > beginEndIndexes[0] && i <= beginEndIndexes[1] + 1) {
+            lineYCoordinates[index - 1].yCoordinates.push(axisReferenceFormula);
+          }
+        });
+      }
+    });
+
+    return lineYCoordinates;
+  }
 }
