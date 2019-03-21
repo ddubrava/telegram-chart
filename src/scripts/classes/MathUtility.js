@@ -65,6 +65,26 @@ export default class MathUtility {
     ];
   }
 
+  static getXY(mobile, event) {
+    let [x, y] = [null, null];
+
+    if (mobile) {
+      const rect = event.target.getBoundingClientRect();
+      [x, y] = [
+        event.targetTouches[0].clientX - rect.left,
+        event.targetTouches[0].clientY - rect.top
+      ];
+    } else {
+      const rect = event.target.getBoundingClientRect();
+      [x, y] = [
+        event.clientX - rect.left,
+        event.clientY - rect.top
+      ];
+    }
+
+    return [x, y];
+  }
+
   // DrawGraph
   static countYCoordinates(chart, beginEndIndexes, min, max, canvasActualHeight, heightOffset) {
     const lineYCoordinates = [];
