@@ -8,11 +8,13 @@ export default class DrawGraph {
     this.minValue = minValue;
     this.maxValue = maxValue;
 
-    emitter.subscribe('event:scale-change', beginEndIndexes => {
+    emitter.subscribe('event:redraw', ([data, beginEndIndexes]) => {
+      this.chart = data;
+
       this.drawLines(
-        this.chart,
+        data,
         MathUtility.countYCoordinates(
-          this.chart,
+          data,
           beginEndIndexes,
           this.minValue,
           this.maxValue,
@@ -20,42 +22,6 @@ export default class DrawGraph {
           heightOffset
         ),
         beginEndIndexes[1] - beginEndIndexes[0]
-      );
-
-      this.scale = beginEndIndexes[1] - beginEndIndexes[0];
-    });
-
-    emitter.subscribe('event:x-change', beginEndIndexes => {
-      this.drawLines(
-        this.chart,
-        MathUtility.countYCoordinates(
-          this.chart,
-          beginEndIndexes,
-          this.minValue,
-          this.maxValue,
-          canvasActualHeight,
-          heightOffset
-        ),
-        this.scale
-      );
-
-      this.beginEndIndexes = beginEndIndexes;
-    });
-
-    emitter.subscribe('event:redraw', data => {
-      this.chart = data;
-
-      this.drawLines(
-        data,
-        MathUtility.countYCoordinates(
-          data,
-          this.beginEndIndexes,
-          this.minValue,
-          this.maxValue,
-          canvasActualHeight,
-          heightOffset
-        ),
-        this.scale
       );
     });
   }

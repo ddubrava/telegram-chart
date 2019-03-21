@@ -19,17 +19,12 @@ export default class DrawMap {
     this.outterWidthOffset = Math.round((window.innerWidth - this.canvas.width) / 2);
     this.lineYCoordinates = [];
 
-    this.drawMapRect();
-    this.drawMapZoom();
-    this.drawLinesInMap();
-    this.changeScale(); // to emit default scale
+    this.redrawDrawMapClass();
+    this.emitBeginEndIndexes(); // emit beginEndIndexes in controller
 
-    emitter.subscribe('event:redraw', data => {
-      this.chart = data;
-
-      this.drawMapRect();
-      this.drawMapZoom();
-      this.drawLinesInMap();
+    emitter.subscribe('event:redraw', ([currentChart]) => {
+      this.chart = currentChart;
+      this.redrawDrawMapClass();
     });
 
     // listeners
@@ -116,7 +111,8 @@ export default class DrawMap {
       }
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.changeXCoordinate();
+      this.redrawDrawMapClass();
+      this.emitBeginEndIndexes();
     }
   }
 
@@ -133,11 +129,8 @@ export default class DrawMap {
       this.zoomX = x;
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.changeScale();
-
-      this.drawMapRect();
-      this.drawMapZoom();
-      this.drawLinesInMap();
+      this.redrawDrawMapClass();
+      this.emitBeginEndIndexes();
     } else if (
       x >= this.zoomX + this.zoomWidth - 2.5
       && x <= this.zoomX + this.zoomWidth + 15
@@ -146,34 +139,20 @@ export default class DrawMap {
       && this.zoomX + this.zoomWidth < this.canvas.width - 2.5
     ) {
       this.zoomWidth = Math.abs(this.zoomX - x);
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.changeScale();
-
-      this.drawMapRect();
-      this.drawMapZoom();
-      this.drawLinesInMap();
+      this.redrawDrawMapClass();
+      this.emitBeginEndIndexes();
     }
   }
 
-  changeXCoordinate() {
-    this.emitter.emit(
-      'event:x-change',
-      MathUtility.getBeginEndIndexes(
-        this.canvas.width,
-        this.zoomX,
-        this.zoomWidth,
-        this.lineYCoordinates.length
-      )
-    );
-
+  redrawDrawMapClass() {
     this.drawMapRect();
     this.drawMapZoom();
     this.drawLinesInMap();
   }
 
-  changeScale() {
+  emitBeginEndIndexes() {
     const [begin, end] = MathUtility.getBeginEndIndexes(
       this.canvas.width,
       this.zoomX,
@@ -181,6 +160,6 @@ export default class DrawMap {
       this.lineYCoordinates.length
     );
 
-    this.emitter.emit('event:scale-change', [begin, end]);
+    this.emitter.emit('event:begin-end-indexes', [begin, end]);
   }
 }

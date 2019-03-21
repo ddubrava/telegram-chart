@@ -33,6 +33,17 @@ export default class ChartController {
     [this.minValue, this.maxValue] = MathUtility.getMinMaxValues(chart);
 
     this.emitter = new EventEmitter();
+
+    this.emitter.subscribe('event:begin-end-indexes', beginEndIndexes => {
+      this.beginEndIndexes = beginEndIndexes;
+      this.emitter.emit('event:redraw', [this.currentChart, beginEndIndexes]);
+    });
+
+    this.emitter.subscribe('event:toggle-line', line => {
+      MathUtility.getCurrentChartModel(line, this.currentChart, chart);
+      this.emitter.emit('event:redraw', [this.currentChart, this.beginEndIndexes]);
+    });
+
     this.drawGrid = new DrawGrid(
       canvas,
       this.ctx,
@@ -69,10 +80,5 @@ export default class ChartController {
       this.emitter
     );
     this.ChangeMode = new ChangeMode(canvas);
-
-    this.emitter.subscribe('event:toggle-line', line => {
-      MathUtility.getCurrentChartModel(line, this.currentChart, chart);
-      this.emitter.emit('event:redraw', this.currentChart);
-    });
   }
 }

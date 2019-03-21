@@ -10,20 +10,9 @@ export default class DrawGrid {
     this.minValue = minValue;
     this.maxValue = maxValue;
 
-    emitter.subscribe('event:scale-change', beginEndIndexes => {
-      this.scale = beginEndIndexes[1] - beginEndIndexes[0];
-      this.xValues = MathUtility.getDates(chart, this.scale);
+    emitter.subscribe('event:redraw', ([data, beginEndIndexes]) => {
+      this.xValues = MathUtility.getDates(data, beginEndIndexes[1] - beginEndIndexes[0]);
       this.yValues = MathUtility.findAverageValues([minValue, maxValue]);
-      this.drawGrid(this.xValues, this.yValues);
-    });
-
-    emitter.subscribe('event:x-change', data => {
-      this.xValues = MathUtility.getDates(chart, this.scale, data[0] + 1);
-      this.drawGrid(this.xValues, this.yValues);
-    });
-
-    emitter.subscribe('event:redraw', data => {
-      this.chart = data;
       this.drawGrid(this.xValues, this.yValues);
     });
   }
