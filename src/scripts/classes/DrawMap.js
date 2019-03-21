@@ -1,18 +1,17 @@
 import MathUtility from './MathUtility';
 
 export default class DrawMap {
-  constructor(canvas, ctx, heightOffset, chart, minValue, maxValue, emitter) {
+  constructor(canvas, ctx, heightOffset, chart, emitter) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.heightOffset = heightOffset;
     this.chart = chart;
-    this.minValue = minValue;
-    this.maxValue = maxValue;
     this.emitter = emitter;
+    [this.minValue, this.maxValue] = MathUtility.getMinMaxValues(chart);
 
     this.mapHeight = 50;
     this.mapYCoordinate = this.canvas.height - this.mapHeight;
-    this.zoomX = 5; // lineWidth
+    this.zoomX = 1; // lineWidth
     this.zoomY = this.mapYCoordinate + 2.5; // 2.5 = lineWidth / 2
     this.zoomWidth = 100;
     this.zoomHeight = this.mapHeight - 5; // - lineWidth

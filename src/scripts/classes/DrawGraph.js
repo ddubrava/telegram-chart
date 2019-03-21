@@ -1,14 +1,12 @@
 import MathUtility from './MathUtility';
 
 export default class DrawGraph {
-  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
+  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, emitter) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.chart = chart;
-    this.minValue = minValue;
-    this.maxValue = maxValue;
 
-    emitter.subscribe('event:redraw', ([data, beginEndIndexes]) => {
+    emitter.subscribe('event:redraw', ([data, beginEndIndexes, minMaxValues]) => {
       this.chart = data;
 
       this.drawLines(
@@ -16,8 +14,8 @@ export default class DrawGraph {
         MathUtility.countYCoordinates(
           data,
           beginEndIndexes,
-          this.minValue,
-          this.maxValue,
+          minMaxValues[0],
+          minMaxValues[1],
           canvasActualHeight,
           heightOffset
         ),

@@ -1,6 +1,22 @@
 export default class MathUtility {
   // Controller
-  static getMinMaxValues(chart) {
+  static getMinMaxValues(chart, beginEndIndexes) {
+    if (beginEndIndexes) {
+      const concatenatedData = [];
+
+      chart.columns.forEach((item, i) => {
+        if (i > 0) {
+          concatenatedData.push(...item.slice(beginEndIndexes[0] + 1, beginEndIndexes[1] + 2));
+        }
+      });
+
+      return [
+        Math.min.apply(null, concatenatedData),
+        Math.max.apply(null, concatenatedData)
+      ];
+    }
+
+    // for DrawingMap
     const concatenatedData = []
       .concat(...chart.columns.slice(-chart.columns.length + 1))
       .filter(item => typeof item === 'number');

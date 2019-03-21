@@ -1,19 +1,17 @@
 import MathUtility from './MathUtility';
 
 export default class DrawGrid {
-  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, minValue, maxValue, emitter) {
+  constructor(canvas, ctx, canvasActualHeight, heightOffset, chart, emitter) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.canvasActualHeight = canvasActualHeight;
     this.heightOffset = heightOffset;
     this.chart = chart;
-    this.minValue = minValue;
-    this.maxValue = maxValue;
 
-    emitter.subscribe('event:redraw', ([data, beginEndIndexes]) => {
-      this.xValues = MathUtility.getDates(data, beginEndIndexes[1] - beginEndIndexes[0]);
-      this.yValues = MathUtility.findAverageValues([minValue, maxValue]);
-      this.drawGrid(this.xValues, this.yValues);
+    emitter.subscribe('event:redraw', ([data, beginEndIndexes, minMaxValues]) => {
+      const xValues = MathUtility.getDates(data, beginEndIndexes[1] - beginEndIndexes[0]);
+      const yValues = MathUtility.findAverageValues([minMaxValues[0], minMaxValues[1]]);
+      this.drawGrid(xValues, yValues);
     });
   }
 

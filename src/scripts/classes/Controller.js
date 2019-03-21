@@ -30,18 +30,16 @@ export default class ChartController {
     this.ctx = canvas.getContext('2d');
 
     this.currentChart = Object.assign({}, chart);
-    [this.minValue, this.maxValue] = MathUtility.getMinMaxValues(chart);
-
     this.emitter = new EventEmitter();
 
     this.emitter.subscribe('event:begin-end-indexes', beginEndIndexes => {
       this.beginEndIndexes = beginEndIndexes;
-      this.emitter.emit('event:redraw', [this.currentChart, beginEndIndexes]);
+      this.emitter.emit('event:redraw', [this.currentChart, beginEndIndexes, MathUtility.getMinMaxValues(chart, beginEndIndexes)]);
     });
 
     this.emitter.subscribe('event:toggle-line', line => {
       MathUtility.getCurrentChartModel(line, this.currentChart, chart);
-      this.emitter.emit('event:redraw', [this.currentChart, this.beginEndIndexes]);
+      this.emitter.emit('event:redraw', [this.currentChart, this.beginEndIndexes, MathUtility.getMinMaxValues(chart, this.beginEndIndexes)]);
     });
 
     this.drawGrid = new DrawGrid(
@@ -50,8 +48,6 @@ export default class ChartController {
       this.canvasActualHeight,
       this.heightOffset,
       chart,
-      this.minValue,
-      this.maxValue,
       this.emitter
     );
     this.drawGraph = new DrawGraph(
@@ -60,8 +56,6 @@ export default class ChartController {
       this.canvasActualHeight,
       this.heightOffset,
       chart,
-      this.minValue,
-      this.maxValue,
       this.emitter
     );
     this.drawMap = new DrawMap(
@@ -69,8 +63,6 @@ export default class ChartController {
       this.ctx,
       this.heightOffset,
       chart,
-      this.minValue,
-      this.maxValue,
       this.emitter
     );
     this.buttonsControl = new ButtonsControl(
