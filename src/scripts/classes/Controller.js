@@ -50,6 +50,15 @@ export default class ChartController {
       ]);
     });
 
+    this.emitter.subscribe('event:change-mode', mode => {
+      this.emitter.emit('event:redraw', [
+        this.currentChart,
+        this.beginEndIndexes,
+        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes),
+        mode
+      ]);
+    });
+
     this.drawGrid = new DrawGrid(
       canvas,
       this.ctx,
@@ -79,6 +88,9 @@ export default class ChartController {
       chart,
       this.emitter
     );
-    this.ChangeMode = new ChangeMode(canvas);
+    this.ChangeMode = new ChangeMode(
+      canvas,
+      this.emitter
+    );
   }
 }
