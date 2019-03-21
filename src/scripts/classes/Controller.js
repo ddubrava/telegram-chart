@@ -37,7 +37,8 @@ export default class ChartController {
       this.emitter.emit('event:redraw', [
         this.currentChart,
         this.beginEndIndexes,
-        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes)
+        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes),
+        this.mode
       ]);
     });
 
@@ -46,7 +47,18 @@ export default class ChartController {
       this.emitter.emit('event:redraw', [
         this.currentChart,
         this.beginEndIndexes,
-        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes)
+        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes),
+        this.mode
+      ]);
+    });
+
+    this.emitter.subscribe('event:change-mode', mode => {
+      this.mode = mode;
+      this.emitter.emit('event:redraw', [
+        this.currentChart,
+        this.beginEndIndexes,
+        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes),
+        mode
       ]);
     });
 
@@ -79,6 +91,9 @@ export default class ChartController {
       chart,
       this.emitter
     );
-    this.ChangeMode = new ChangeMode(canvas);
+    this.ChangeMode = new ChangeMode(
+      canvas,
+      this.emitter
+    );
   }
 }

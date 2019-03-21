@@ -8,7 +8,8 @@ export default class DrawGrid {
     this.heightOffset = heightOffset;
     this.chart = chart;
 
-    emitter.subscribe('event:redraw', ([data, beginEndIndexes, minMaxValues]) => {
+    emitter.subscribe('event:redraw', ([data, beginEndIndexes, minMaxValues, mode]) => {
+      this.mode = mode;
       const xValues = MathUtility.getDates(data, beginEndIndexes[1] - beginEndIndexes[0]);
       const yValues = MathUtility.findAverageValues([minMaxValues[0], minMaxValues[1]]);
       this.drawGrid(xValues, yValues);
@@ -19,7 +20,7 @@ export default class DrawGrid {
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
     this.ctx.lineTo(this.canvas.width, y);
-    this.ctx.strokeStyle = '#DFE6EB';
+    this.ctx.strokeStyle = this.mode ? '#344658' : '#DFE6EB';
     this.ctx.stroke();
   }
 

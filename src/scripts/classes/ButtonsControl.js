@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 export default class ButtonsControl {
   constructor(canvas, ctx, chart, emitter) {
     this.canvas = canvas;
@@ -8,6 +9,22 @@ export default class ButtonsControl {
 
     this.createButtons();
     this.checkMarks = document.querySelectorAll(`.main__check-mark_${this.canvas.parentNode.id.slice(-1)}`);
+
+    this.emitter.subscribe('event:change-mode', mode => {
+      this.mode = mode;
+      const buttons = [...canvas.parentNode.children[1].children];
+      buttons.forEach(btn => {
+        if (mode) {
+          btn.style.background = 'transparent';
+          btn.style.border = '1px solid #344658';
+          btn.lastChild.style.color = '#fff';
+        } else {
+          btn.style.background = '#fff';
+          btn.style.border = '1px solid #DDEAF3';
+          btn.lastChild.style.color = '#000';
+        }
+      });
+    });
   }
 
   createButtons() {
@@ -41,13 +58,15 @@ export default class ButtonsControl {
     const color = elem.style.cssText.slice(12, elem.style.cssText.length - 1);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    if (elem.style.background === 'rgb(255, 255, 255)') {
-      this.emitter.emit('event:toggle-line', { [event.target.id]: true });
+    if (elem.style.background === 'transparent') {
       elem.style = `background: ${this.chart.colors[event.target.id]}`;
+      this.emitter.emit('event:toggle-line', { [event.target.id]: true });
+      if (this.mode) elem.classList.toggle('main__check-mark_hidden');
     } else {
-      elem.style.background = '#fff';
+      elem.style.background = 'transparent';
       elem.style.border = `1px solid ${color}`;
       this.emitter.emit('event:toggle-line', { [event.target.id]: false });
+      if (this.mode) elem.classList.toggle('main__check-mark_hidden');
     }
   }
 }
