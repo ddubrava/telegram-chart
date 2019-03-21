@@ -12,10 +12,10 @@ export default class DrawMap {
 
     this.mapHeight = 50;
     this.mapYCoordinate = this.canvas.height - this.mapHeight;
-    this.zoomX = 1;
-    this.zoomY = this.mapYCoordinate;
+    this.zoomX = 5; // lineWidth
+    this.zoomY = this.mapYCoordinate + 2.5; // 2.5 = lineWidth / 2
     this.zoomWidth = 100;
-    this.zoomHeight = this.mapHeight;
+    this.zoomHeight = this.mapHeight - 5; // - lineWidth
     this.outterWidthOffset = Math.round((window.innerWidth - this.canvas.width) / 2);
     this.lineYCoordinates = [];
 
@@ -33,13 +33,21 @@ export default class DrawMap {
     });
 
     // listeners
-    this.canvas.ontouchmove = event => {
-      this.handleMove(this.constructor.getXY(true, event));
+    this.canvas.ontouchstart = touchStartEvent => {
+      const shiftX = MathUtility.getXY(true, touchStartEvent)[0] - this.zoomX;
+      this.canvas.ontouchmove = event => {
+        const [x, y] = MathUtility.getXY(true, event);
+        this.handleMove([x, y], shiftX);
+        this.handleResize([x, y]);
+      };
     };
 
-    this.canvas.onmousedown = () => {
+    this.canvas.onmousedown = mouseDownEvent => {
+      const shiftX = MathUtility.getXY(false, mouseDownEvent)[0] - this.zoomX;
       this.canvas.onmousemove = event => {
-        this.handleMove(this.constructor.getXY(false, event));
+        const [x, y] = MathUtility.getXY(false, event);
+        this.handleMove([x, y], shiftX);
+        this.handleResize([x, y]);
       };
     };
 
@@ -55,9 +63,9 @@ export default class DrawMap {
 
   drawMapZoom() {
     this.ctx.rect(this.zoomX, this.zoomY, this.zoomWidth, this.zoomHeight);
+    this.ctx.lineWidth = 5;
     this.ctx.fillStyle = '#FFF';
     this.ctx.fill();
-    this.ctx.lineWidth = 2;
     this.ctx.strokeStyle = '#DDEAF3';
     this.ctx.stroke();
   }
@@ -96,38 +104,18 @@ export default class DrawMap {
     });
   }
 
-  static getXY(mobile, event) {
-    let [x, y] = [null, null];
-
-    if (mobile) {
-      const rect = event.target.getBoundingClientRect();
-      [x, y] = [
-        event.targetTouches[0].clientX - rect.left,
-        event.targetTouches[0].clientY - rect.top
-      ];
-    } else {
-      const rect = event.target.getBoundingClientRect();
-      [x, y] = [
-        event.clientX - rect.left,
-        event.clientY - rect.top
-      ];
-    }
-
-    return [x, y];
-  }
-
-  handleMove([x, y]) {
+  handleMove([x, y], shiftX) {
     if (
-      x >= this.zoomX
-      && x <= this.zoomX + this.zoomWidth
+      x >= this.zoomX + 5 // lineWidth (not / 2 for empty space)
+      && x <= this.zoomX + this.zoomWidth - 5
       && y >= this.zoomY
       && y <= this.zoomY + this.zoomHeight
     ) {
-      if (x - this.zoomWidth / 2 > 0 && x + this.zoomHeight < this.canvas.width - 2) {
-        this.zoomX = x - this.zoomWidth / 2;
+      if (x - shiftX > 0 && x - shiftX + this.zoomWidth < this.canvas.width) {
+        this.zoomX = x - shiftX;
       }
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.emitter.emit(
         'event:x-change',
         MathUtility.getBeginEndIndexes(
@@ -144,6 +132,43 @@ export default class DrawMap {
     }
   }
 
+  handleResize([x, y]) {
+    // if - left size, else if - right side
+    if (
+      x >= this.zoomX - 15
+      && x <= this.zoomX + 2.5
+      && y >= this.zoomY
+      && y <= this.zoomY + this.zoomHeight
+      && this.zoomX > 2.5
+    ) {
+      this.zoomWidth += this.zoomX - x;
+      this.zoomX = x;
+
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.changeScale();
+
+      this.drawMapRect();
+      this.drawMapZoom();
+      this.drawLinesInMap();
+    } else if (
+      x >= this.zoomX + this.zoomWidth - 2.5
+      && x <= this.zoomX + this.zoomWidth + 15
+      && y >= this.zoomY
+      && y <= this.zoomY + this.zoomHeight
+      && this.zoomX + this.zoomWidth < this.canvas.width - 2.5
+    ) {
+      this.zoomWidth = Math.abs(this.zoomX - x);
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.changeScale();
+
+      this.drawMapRect();
+      this.drawMapZoom();
+      this.drawLinesInMap();
+    }
+  }
+
   changeScale() {
     const [begin, end] = MathUtility.getBeginEndIndexes(
       this.canvas.width,
@@ -151,6 +176,6 @@ export default class DrawMap {
       this.zoomWidth,
       this.lineYCoordinates.length
     );
-    this.emitter.emit('event:scale-change', end - begin);
+    this.emitter.emit('event:scale-change', [begin, end]);
   }
 }

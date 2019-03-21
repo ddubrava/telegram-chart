@@ -8,21 +8,21 @@ export default class DrawGraph {
     this.minValue = minValue;
     this.maxValue = maxValue;
 
-    emitter.subscribe('event:scale-change', scale => {
+    emitter.subscribe('event:scale-change', beginEndIndexes => {
       this.drawLines(
         chart,
         MathUtility.countYCoordinates(
           chart,
-          undefined,
+          beginEndIndexes,
           this.minValue,
           this.maxValue,
           canvasActualHeight,
           heightOffset
         ),
-        scale
+        beginEndIndexes[1] - beginEndIndexes[0]
       );
 
-      this.scale = scale;
+      this.scale = beginEndIndexes[1] - beginEndIndexes[0];
     });
 
     emitter.subscribe('event:x-change', beginEndIndexes => {
