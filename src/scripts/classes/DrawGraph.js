@@ -10,9 +10,9 @@ export default class DrawGraph {
 
     emitter.subscribe('event:scale-change', beginEndIndexes => {
       this.drawLines(
-        chart,
+        this.chart,
         MathUtility.countYCoordinates(
-          chart,
+          this.chart,
           beginEndIndexes,
           this.minValue,
           this.maxValue,
