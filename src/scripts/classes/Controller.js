@@ -34,12 +34,20 @@ export default class ChartController {
 
     this.emitter.subscribe('event:begin-end-indexes', beginEndIndexes => {
       this.beginEndIndexes = beginEndIndexes;
-      this.emitter.emit('event:redraw', [this.currentChart, beginEndIndexes, MathUtility.getMinMaxValues(chart, beginEndIndexes)]);
+      this.emitter.emit('event:redraw', [
+        this.currentChart,
+        this.beginEndIndexes,
+        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes)
+      ]);
     });
 
     this.emitter.subscribe('event:toggle-line', line => {
-      MathUtility.getCurrentChartModel(line, this.currentChart, chart);
-      this.emitter.emit('event:redraw', [this.currentChart, this.beginEndIndexes, MathUtility.getMinMaxValues(chart, this.beginEndIndexes)]);
+      this.currentChart = MathUtility.getCurrentChartModel(line, this.currentChart, chart);
+      this.emitter.emit('event:redraw', [
+        this.currentChart,
+        this.beginEndIndexes,
+        MathUtility.getMinMaxValues(this.currentChart, this.beginEndIndexes)
+      ]);
     });
 
     this.drawGrid = new DrawGrid(
