@@ -21,7 +21,8 @@ export default class DrawMap {
     this.redrawDrawMapClass();
     this.emitBeginEndIndexes(); // emit beginEndIndexes in controller
 
-    emitter.subscribe('event:redraw', ([currentChart]) => {
+    emitter.subscribe('event:redraw', ([currentChart, ...rest]) => {
+      [this.mode] = [rest[2]];
       this.chart = currentChart;
       this.redrawDrawMapClass();
     });
@@ -51,16 +52,16 @@ export default class DrawMap {
   }
 
   drawMapRect() {
-    this.ctx.fillStyle = '#F5F9FB';
+    this.ctx.fillStyle = this.mode ? '#1F2A38' : '#F5F9FB';
     this.ctx.fillRect(0, this.mapYCoordinate, this.canvas.width, this.mapHeight);
   }
 
   drawMapZoom() {
     this.ctx.rect(this.zoomX, this.zoomY, this.zoomWidth, this.zoomHeight);
     this.ctx.lineWidth = 5;
-    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillStyle = this.mode ? '#242F3E' : '#FFF';
     this.ctx.fill();
-    this.ctx.strokeStyle = '#DDEAF3';
+    this.ctx.strokeStyle = this.mode ? '#344658' : '#DDEAF3';
     this.ctx.stroke();
   }
 
