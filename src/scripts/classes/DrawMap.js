@@ -116,19 +116,7 @@ export default class DrawMap {
       }
 
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.emitter.emit(
-        'event:x-change',
-        MathUtility.getBeginEndIndexes(
-          this.canvas.width,
-          this.zoomX,
-          this.zoomWidth,
-          this.lineYCoordinates.length
-        )
-      );
-
-      this.drawMapRect();
-      this.drawMapZoom();
-      this.drawLinesInMap();
+      this.changeXCoordinate();
     }
   }
 
@@ -169,6 +157,22 @@ export default class DrawMap {
     }
   }
 
+  changeXCoordinate() {
+    this.emitter.emit(
+      'event:x-change',
+      MathUtility.getBeginEndIndexes(
+        this.canvas.width,
+        this.zoomX,
+        this.zoomWidth,
+        this.lineYCoordinates.length
+      )
+    );
+
+    this.drawMapRect();
+    this.drawMapZoom();
+    this.drawLinesInMap();
+  }
+
   changeScale() {
     const [begin, end] = MathUtility.getBeginEndIndexes(
       this.canvas.width,
@@ -176,6 +180,7 @@ export default class DrawMap {
       this.zoomWidth,
       this.lineYCoordinates.length
     );
+
     this.emitter.emit('event:scale-change', [begin, end]);
   }
 }
