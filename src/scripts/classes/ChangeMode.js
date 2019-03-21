@@ -1,9 +1,9 @@
 export default class ChangeMode {
-  constructor(canvas) {
-    this.constructor.changeMode(canvas);
+  constructor(canvas, emitter) {
+    this.constructor.changeMode(canvas, emitter);
   }
 
-  static changeMode(canvas) {
+  static changeMode(canvas, emitter) {
     const chartContainer = canvas.parentNode;
     const span = document.createElement('span');
 
@@ -19,9 +19,11 @@ export default class ChangeMode {
       if (mode) {
         span.innerHTML = 'Switch to Night Mode';
         mode = 0;
+        emitter.emit('event:change-mode', 0);
       } else {
         span.innerHTML = 'Switch to Day Mode';
         mode = 1;
+        emitter.emit('event:change-mode', 1);
       }
     });
   }
