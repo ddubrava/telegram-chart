@@ -112,14 +112,12 @@ export default class MathUtility {
           yCoordinates: []
         });
 
-        col.forEach((item, i) => {
+        col.slice(beginEndIndexes[0], beginEndIndexes[1]).forEach((item, i) => {
           const axisReferenceFormula = canvasActualHeight - (item - min)
             * (canvasActualHeight / (max - min))
               + heightOffset;
 
-          if (!beginEndIndexes && i > 0) {
-            lineYCoordinates[index - 1].yCoordinates.push(axisReferenceFormula);
-          } else if (i > 0 && i > beginEndIndexes[0] && i <= beginEndIndexes[1] + 1) {
+          if (i > 0) {
             lineYCoordinates[index - 1].yCoordinates.push(axisReferenceFormula);
           }
         });
