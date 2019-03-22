@@ -54,13 +54,14 @@ export default class MathUtility {
     return values.reverse();
   }
 
-  static getDates(chart, scale, begin = 1) {
+  static getDates(chart, beginEndIndexes) {
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const dateDiff = Math.ceil(scale / 6);
+    const dateDiff = Math.ceil((beginEndIndexes[1] - beginEndIndexes[0]) / 6);
     const dates = chart.columns[0];
     let filteredDates = [];
 
-    for (let i = begin; i < dates.length; i += dateDiff) {
+    // + 1 as [0] is 'x' && + 1 as xValues arent starting from the X(0)
+    for (let i = beginEndIndexes[0] + 2; i < dates.length; i += dateDiff) {
       filteredDates.push(dates[i]);
     }
 

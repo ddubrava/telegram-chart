@@ -10,7 +10,8 @@ export default class DrawGrid {
 
     emitter.subscribe('event:redraw', ([data, beginEndIndexes, minMaxValues, mode]) => {
       this.mode = mode;
-      const xValues = MathUtility.getDates(data, beginEndIndexes[1] - beginEndIndexes[0]);
+      const xValues = MathUtility.getDates(data, beginEndIndexes);
+      // console.log(xValues)
       const yValues = MathUtility.findAverageValues([minMaxValues[0], minMaxValues[1]]);
       this.drawGrid(xValues, yValues);
     });
