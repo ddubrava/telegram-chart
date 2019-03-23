@@ -1,3 +1,4 @@
-import style from './style.scss';
+import './assets/styles/style.scss';
+import './assets/styles/index.scss';
 
-console.log(true)
+require('./scripts/app.js');

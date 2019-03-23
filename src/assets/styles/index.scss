@@ -1,0 +1,86 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background: #fff;
+  &__chart-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  &__chart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    &_midnight-blue {
+      background: #242F3E;
+    }
+  }
+  &__button-container {
+    display: flex;
+    width: 100vw;
+    margin-right: auto;
+    margin-top: 1rem;
+  }
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 85px;
+    height: 35px;
+    margin: 0 1rem;
+    background: #fff;
+    border-radius: 50px;
+    border: 1px solid #DDEAF3;
+    outline: none;
+  }
+  &__check-mark {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: background-color .2s linear;
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 20%;
+      left: 35%;
+      transform: translate(-20%, -35%);
+      width: 3px;
+      height: 8px;
+      border: 1px solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    &_hidden {
+      &:after {
+        display: none;
+      }
+    }
+  }
+  &__switch-mode {
+    margin-top: auto;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: #007aff;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 720px) {
+  .main {
+    &__chart {
+      margin: 0 1rem;
+    }
+    &__button-container {
+      width: auto;
+    }
+  }
+}
